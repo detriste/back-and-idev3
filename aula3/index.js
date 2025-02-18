@@ -23,5 +23,5 @@ app.get("/users",(req,res)=>{
 
 const port = 3000;
 app.listen(port,()=>{
-    console.log("servidor rodando na porta 3000",port);
+    console.log("servidor rodando na porta",port);
 })
