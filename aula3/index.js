@@ -15,5 +15,13 @@ if(!nome|| !email){
 const user = userService.adduser(nome,email);
 res.status(200).json({user});
 })
-// rota pro usuario
-app.get("")
+// rota pra listar os usuarios
+
+app.get("/users",(req,res)=>{
+    res.json(userService.getusers());
+});
+
+const port = 3000;
+app.listen(port,()=>{
+    console.log("servidor rodando na porta 3000",port);
+})
