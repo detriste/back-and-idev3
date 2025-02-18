@@ -16,4 +16,4 @@ return this.users
     }
 }
 
-modulo.export = new userService;
+module.export = new userService;
