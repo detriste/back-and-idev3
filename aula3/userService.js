@@ -10,4 +10,10 @@ class userService{
         this.users.push(user);
         return user;
     }
+    getusers(){
+return this.users
+
+    }
 }
+
+modulo.export = new userService;
