@@ -1,6 +1,5 @@
 const express = require ('express')
 const userService = require('./userService');
-const { error } = require('console');
 
 const app = express (); //nome qualquer para express
 app.use(express.json)
