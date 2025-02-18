@@ -2,7 +2,7 @@ const express = require ('express')
 const userService = require('./userService');
 
 const app = express (); //nome qualquer para express
-app.use(express.json)
+app.use(express.json());
 
 
 app.post("/users",(req,res) =>{
