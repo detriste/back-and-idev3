@@ -3,15 +3,15 @@ const userService = require('./userService');
 
 const app = express(); //nome qualquer para express
 app.use(express.json());
+ 
 
-
-app.post("/users", (req, res) => {
-    const { nome, email } = req.body;
-    if (!nome || !email) {
+app.post("/users", (req, res,) => {
+    const { nome, email,senha } = req.body;
+    if (!nome || !email|| !senha){
         return res.status(400).json
             ({ error: "nome e email são obrigátorios" })
     }
-    const user = userService.adduser(nome, email);
+    const user = userService.adduser(nome, email,senha);
     res.status(200).json({ user });
 })
 // rota pra listar os usuarios
