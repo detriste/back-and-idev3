@@ -11,14 +11,14 @@ app.post("/users", (req, res) => {
         return res.status(400).json
             ({ error: "nome e email são obrigátorios" })
     }
-    const user = userService.addUser(nome, email);
+    const user = userService.adduser(nome, email);
     res.status(200).json({ user });
 })
 // rota pra listar os usuarios
 
 app.get("/users", (req, res) => {
-    res.json(userService.getUser());
-});
+    res.json(userService.getusers());
+})
 
 const port = 3000;
 app.listen(port, () => {
