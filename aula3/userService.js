@@ -1,7 +1,6 @@
 const User = require ("./user");
 const path = require('path'); //modulo para manipular caminhos
 const fs = require('fs'); // modulo para manipular arquivos files system
-const { json } = require("stream/consumers");
 
 class userService{
     constructor(){
@@ -31,18 +30,13 @@ class userService{
         }
     }
 
-
-
-
-
-saveUsers(){
-    fs.writeFileSync(this.filePath,json.sringingify(this.users)); 
-}catch(erro){//Caso ocorra um erro
-    console.log("Erro ao salvar arquivo",erro);
-}
-}
-
-
+    saveUsers(){
+        try{
+            fs.writeFileSync(this.filePath, json.stringify(this.users));
+        }catch(erro){
+            console.log("Erro ao salvar arquivo", erro);
+        }
+    }
 
         addUser(nome, email){
             try{
@@ -50,7 +44,7 @@ saveUsers(){
             this.users.push(user)
             return user;
             }catch(erro){
-                console.log("Erro", erro)
+                console.log("Erro", erro);
             }
         }
 
@@ -58,7 +52,7 @@ saveUsers(){
             try{
             return this.users
             }catch(erro){
-                console.log("Erro", erro)
+                console.log("Erro", erro);
             }
         }
 }
