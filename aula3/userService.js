@@ -48,7 +48,7 @@ class userService{
                 console.log("Erro", erro);
             }
         }
-
+                                
         getUsers(){
             try{
             return this.users
