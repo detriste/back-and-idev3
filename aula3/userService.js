@@ -23,7 +23,7 @@ class userService{
     
     getNextId(){
         try{
-        if(this.users.length===0) return 1;
+        if(this.userst.length===0) return 1;
             return Math.max(...this.users.map(user => user.id))+1;
         }catch(erro){//Caso ocorra um erro
             console.log("Erro ao carregar arquivo", erro);
