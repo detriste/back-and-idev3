@@ -6,12 +6,12 @@ app.use(express.json());
  
 
 app.post("/users", (req, res,) => {
-    const { nome, email,senha } = req.body;
-    if (!nome || !email|| !senha){
+    const { nome, email,senha,cpf,telefone } = req.body;
+    if (!nome || !email|| !senha ||!cpf ||!telefone){
         return res.status(400).json
             ({ error: "nome e email são obrigátorios" })
     }
-    const user = userService.adduser(nome, email,senha);
+    const user = userService.adduser(nome, email,senha,cpf,telefone);
     res.status(200).json({ user });
 })
 // rota pra listar os usuarios
