@@ -56,6 +56,16 @@ class userService{
                 console.log("Erro", erro);
             }
         }
-}
+        deleteUser(id){
+            this.user = this.user.filter(user => user.id !== id);
+            this.saveUsers();
 
-module.exports = new userService;
+        }catch(erro){
+            console.log("Erro ao deletar o usuario", erro);
+        }
+            
+
+        }
+
+
+module.exports = new userService; 
