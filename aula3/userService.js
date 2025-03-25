@@ -67,6 +67,21 @@ class userService {
             console.log("Erro ao deletar o usuario", erro);
         }
     }
+
+
+updateUser(id) {
+    try {
+        const user = this.users.find(user => user.id === id);
+        if (!user) throw new Error("Usuário não encontrado");
+        user.nome = nome;
+        user.email = email;
+        user.senha = senha;
+        user.telefone = telefone;
+        user.cpf = cpf;
+    } catch (erro) {
+        console.log("Erro a atualizar o usuario", erro);
+    }
+}
 }
 
 module.exports = new userService();
