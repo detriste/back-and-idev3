@@ -61,12 +61,20 @@ class userService {
 
     deleteUser(id) {
         try {
-            this.users = this.users.filter(user => user.id !== id);
-            this.saveUsers();
+            const userIndex = this.users.findIndex(user => user.id === id);
+            if (userIndex === -1) {
+                throw new Error("Usuário não encontrado");
+            }
+    
+            this.users.splice(userIndex, 1); // Remove o usuário pelo índice
+            this.saveUsers(); // Salva a lista atualizada no arquivo
+            return { message: "Usuário deletado com sucesso" };
         } catch (erro) {
-            console.log("Erro ao deletar o usuario", erro);
+            console.log("Erro ao deletar o usuário:", erro.message);
+            return { error: erro.message };
         }
     }
+
 
     async updateUser(id, nome, email, senha, telefone, cpf) {
         try {
