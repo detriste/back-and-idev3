@@ -61,9 +61,9 @@ class userService {
 
     deleteUser(id) {
         try {
-            const userIndex = this.users.findIndex(user => user.id === id);
+          const userIndex = this.users.findIndex(user => user.id === id);
             if (userIndex === -1) {
-                throw new Error("Usuário não encontrado");
+                throw new Error("Usuário não encontrado");  
             }
     
             this.users.splice(userIndex, 1); // Remove o usuário pelo índice
@@ -80,7 +80,7 @@ class userService {
         try {
             const user = this.users.find(user => user.id === id);
             if (!user) throw new Error("Usuário não encontrado");
-
+0
             user.nome = nome || user.nome;
             user.email = email || user.email;
             user.telefone = telefone || user.telefone;
