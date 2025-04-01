@@ -39,10 +39,10 @@ class userService {
         }
     }
 
-   async addUser(nome, email, senha, telefone, cpf) {
+    async addUser(nome, email, senha, telefone, cpf) {
         try {
-            const senhaCripto = await bcrypt.hash(senha,10);
-            const user = new User(this.nextId++, nome, email, senhaCripto, telefone,cpf); // ++ vai adicionar mais 1 no número do id a cada novo usuário, que inicialmente é 1.
+            const senhaCripto = await bcrypt.hash(senha, 10);
+            const user = new User(this.nextId++, nome, email, senhaCripto, telefone, cpf); // ++ vai adicionar mais 1 no número do id a cada novo usuário, que inicialmente é 1.
             this.users.push(user);
             this.saveUsers();
             return user;
@@ -68,20 +68,26 @@ class userService {
         }
     }
 
+    async updateUser(id, nome, email, senha, telefone, cpf) {
+        try {
+            const user = this.users.find(user => user.id === id);
+            if (!user) throw new Error("Usuário não encontrado");
 
-updateUser(id) {
-    try {
-        const user = this.users.find(user => user.id === id);
-        if (!user) throw new Error("Usuário não encontrado");
-        user.nome = nome;
-        user.email = email;
-        user.senha = senha;
-        user.telefone = telefone;
-        user.cpf = cpf;
-    } catch (erro) {
-        console.log("Erro a atualizar o usuario", erro);
+            user.nome = nome || user.nome;
+            user.email = email || user.email;
+            user.telefone = telefone || user.telefone;
+            user.cpf = cpf || user.cpf;
+
+            if (senha) {
+                user.senha = await bcrypt.hash(senha, 10); // Atualiza a senha criptografada
+            }
+
+            this.saveUsers(); // Salva as alterações no arquivo
+            return user;
+        } catch (erro) {
+            console.log("Erro ao atualizar o usuario", erro);
+        }
     }
-}
 }
 
 module.exports = new userService();
