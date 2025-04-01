@@ -6,6 +6,7 @@ class User {
         this.telefone = telefone; // Telefone do usuário
         this.senha = senha; // Senha do usuário (criptografada)
         this.cpf = cpf; // CPF do usuário
+        this.endereco = this.endereco;
     }
 }
 

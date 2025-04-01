@@ -7,15 +7,15 @@ app.use(express.json()); // Middleware para interpretar JSON
 // Rota para criar um novo usuário
 app.post("/users", async (req, res) => {
     try {
-        const { nome, email, senha, telefone, cpf } = req.body;
+        const { nome, email, senha, telefone, cpf,endereco } = req.body;
 
         // Validação dos campos obrigatórios
-        if (!nome || !email || !senha || !telefone || !cpf) {
+        if (!nome || !email || !senha || !telefone || !cpf|| !endereco) {
             return res.status(400).json({ error: "Todos os campos são obrigatórios: nome, email, senha, cpf, telefone" });
         }
 
         // Adiciona o usuário
-        const user = await userService.addUser(nome, email, senha, telefone, cpf);
+        const user = await userService.addUser(nome, email, senha, telefone, cpf,endereco);
         res.status(201).json({ user }); // Retorna o usuário criado com status 201
     } catch (error) {
         console.error("Erro ao criar usuário:", error);

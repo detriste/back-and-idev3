@@ -76,7 +76,7 @@ class userService {
     }
 
 
-    async updateUser(id, nome, email, senha, telefone, cpf) {
+    async updateUser(id, nome, email, senha, telefone, cpf,endereco) {
         try {
             const user = this.users.find(user => user.id === id);
             if (!user) throw new Error("Usuário não encontrado");
@@ -85,6 +85,7 @@ class userService {
             user.email = email || user.email;
             user.telefone = telefone || user.telefone;
             user.cpf = cpf || user.cpf;
+            user.endereco = endereco || user.endereco;
 
             if (senha) {
                 user.senha = await bcrypt.hash(senha, 10); // Atualiza a senha criptografada
