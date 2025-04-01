@@ -1,5 +1,5 @@
 class User {
-    constructor(id, nome, email, senha, telefone, cpf) {
+    constructor(id, nome, email, senha, telefone, cpf,endereco) {
         this.id = id; // ID único do usuário
         this.nome = nome; // Nome do usuário
         this.email = email; // E-mail do usuário
