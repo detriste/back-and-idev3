@@ -7,13 +7,14 @@ app.use(express.json()) //ativa o json no express
 
 //rota para usuario ser criado
 app.post("/users", async (req, res) => {
+    console.log('entrou')
     try {
-        const { nome, email, senha, endereco, telefone, cpf } = req.body //passa um arquivo via json pra nome e email
-        if (!nome || !email || !endereco || !senha || !telefone || !cpf) { //caso o nome e o email sejam diferentes de (estejam vazios) vai dar erro
+        const { nome, email, senha, endereco, telefone, cpf, idade } = req.body //passa um arquivo via json pra nome e email
+        if (!nome || !email || !endereco || !senha || !telefone || !cpf|| !idade) { //caso o nome e o email sejam diferentes de (estejam vazios) vai dar erro
             return res.status(400).json({ error: "Nome, email, endereço, senha, telefone e cpf são obrigatórios" }) //mensagem enviada caso dê erro (nome ou email vazios)
         }
-        const user = await userService.addUser(nome, email, senha, endereco, telefone, cpf)
-        res.status(200).json({ user })
+        const user = await userService.addUser(nome, email, senha, endereco, telefone, cpf, idade)
+        res.status(200).json({ "mensagem": "Usuario Cadastrado com Sucesso!" });
     } catch (erro) {
         res.status(400).json({ error: erro.message })
     }
