@@ -1,5 +1,5 @@
 const express = require('express')
-const userService = require('./userServer');
+const userService = require('./userService') //importa o arquivo userService.js;
 
 const app = express() //nome pro express, pode ser qualquer coisa
 app.use(express.json()) //ativa o json no express
