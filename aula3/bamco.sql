@@ -11,13 +11,13 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `IDEV3` DEFAULT CHARACTER SET utf8 ;
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
 -- Table `mydb`.`table1`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `IDEV3`.`table1` (
+CREATE TABLE IF NOT EXISTS `mydb`.`table1` (
   `idtable1` INT NOT NULL,
   `nome` VARCHAR(45) NOT NULL,
   `senha` VARCHAR(45) NOT NULL,
@@ -31,7 +31,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `mydb`.`USUARIO`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `IDEV3`.`USUARIO` (
+CREATE TABLE IF NOT EXISTS `mydb`.`USUARIO` (
   `idusuario` INT NOT NULL AUTO_INCREMENT,
   `endereco` VARCHAR(45) NOT NULL,
   `Email` VARCHAR(45) NOT NULL,
