@@ -74,7 +74,7 @@ exports.execute = (query, param = [], varPool=pool) => {
         }
         else {
             resolve(results);
-
+  
         }
     })
 }
