@@ -1,80 +1,101 @@
-const express = require('express')
-const userService = require('./userService')
+const User = require("./user")
+const path = require("path") //modulo para manipular caminhos
+const fs = require("fs")// modulo para manipular arquivos file system
+const bcrypt = require("bcryptjs")// modulo para criptografar senha
 
-const app = express() //nome pro express, pode ser qualquer coisa
-app.use(express.json()) //ativa o json no express
-
-
-//rota para usuario ser criado
-app.post("/users", async (req, res) => {
-    try {
-        const { nome, email, senha, endereco, telefone, cpf } = req.body //passa um arquivo via json pra nome e email
-        if (!nome || !email || !endereco || !senha || !telefone || !cpf) { //caso o nome e o email sejam diferentes de (estejam vazios) vai dar erro
-            return res.status(400).json({ error: "Nome, email, endereço, senha, telefone e cpf são obrigatórios" }) //mensagem enviada caso dê erro (nome ou email vazios)
-        }
-        const user = await userService.addUser(nome, email, senha, endereco, telefone, cpf)
-        res.status(200).json({ user })
-    } catch (erro) {
-        res.status(400).json({ error: erro.message })
+class userService {
+    constructor() { //quando não passa parâmetro traz um valor fixo, que não muda
+        this.filePath = path.join(__dirname, 'user.json')
+        this.users = this.loadUsers()
+        this.nextID = this.getNextId()
     }
-})
 
-//rota pra listar todos os usuarios
-app.get("/users", (req, res) => {
-    res.json(userService.getUsers())
-})
-
-app.delete("/users/:id", (req, res) => {
-    const id = parseInt(req.params.id) //converte id em numero
-    try {
-        const resultado = userService.deleteUser(id) //tenta excluir o usuario
-        res.status(200).json(resultado) //retorna mensagem de sucesso
-    } catch (erro) {
-        res.status(404).json({ error: erro.message }) //retorna mensagem de erro
+    loadUsers() {
+        try {
+            if (fs.existsSync(this.filePath)) {
+                const data = fs.readFileSync(this.filePath)
+                return JSON.parse(data)
+            }
+        } catch (erro) {
+            console.log("Erro ao carregar arquivo", erro)
+        }
+        return [] //retorna um array vazio
     }
-})
 
-app.put("/users/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const { nome, email, senha, endereco, telefone, cpf } = req.body;
-    try {
-        const resultado = await userService.updateUser(id, nome, email, senha, endereco, telefone, cpf);
-        if (!resultado) {
-            return res.status(404).json({ error: "Usuário não encontrado" });
+    getNextId(users) { //função para buscar próximo id
+        try {
+            if (this.users.length === 0) return 1
+            return Math.max(...this.users.map(user => user.id)) + 1
+        } catch (erro) {
+            console.log("Erro ao buscar próximo id", erro)
         }
-        res.status(200).json(resultado);
-    } catch (erro) {
-        console.log("Erro ao atualizar o usuário", erro);
-        res.status(500).json({ error: erro.message });
     }
-});
 
-const port = 3000
-app.listen(port, () => {
-    console.log("O servidor está rodando na porta: ", port)
-})
-const { query } = require('express');
-const mysql = require('mysql');
-const { resolve } = require('path');
-
-const pool = mysql.createPool({
-"User":"root",
-"password":"root",
-"database":"idev3",
-"host":"localhost",
-"port":"3307"
-
-});
-
-exports.execute = (query, param = [], varPool=pool) => {
-    return new Promise((resolve, reject) => {
-        varPool.query(query, param (error, results))
-        if(error) {
-            reject(error);
+    saveUsers() { //função para salvar os usuários
+        try {
+            fs.writeFileSync(this.filePath, JSON.stringify(this.users))
+        } catch (erro) {
+            console.log("Erro ao salvar arquivo", erro)
         }
-        else {
-            resolve(results);
-  
+    }
+
+    async addUser(nome, email, senha, endereco, telefone, cpf) {
+        try {
+            const emailexiste = this.users.some(user => user.email === email) //verifica se o email já existe
+            if (emailexiste) {
+                throw new Error("Email já cadastrado") //se o email já existir, vai dar erro
+            }
+            const senhaCripto = await bcrypt.hash(senha, 10)
+            const user = new User(this.nextID++, nome, email, senhaCripto, endereco, telefone, cpf)  //cria novo user, e o novoid++ é pra toda vez aumentar um no id
+            this.users.push(user) //da um push pra armazenar esse user no array de usuarios
+            this.saveUsers()
+            return user
+        } catch (erro) {
+            console.log("Erro ao adicionar usuário", erro)
+            throw erro
         }
-    })
+    }
+    getUsers() {
+        try {
+            return this.users
+        } catch (erro) {
+            console.log("Erro ao buscar usuários", erro)
+        }
+    }
+
+    deleteUser(id) {
+        try {
+            this.users = this.users.filter(user => user.id !== id)
+            this.saveUsers()
+        } catch (erro) {
+            console.log("Erro ao deletar usuário", erro)
+        }
+    }
+
+    async updateUser(id, nome, email, senha, endereco, telefone, cpf) {
+        try {            
+            const senhaCriptografada = await bcrypt.hash(senha, 10);
+            const user = this.users.find(user => user.id == id);
+            if (!user) throw new Error("Usuário não encontrado");
+            if (email !== user.email) {
+                const emailexiste = this.users.some(user => user.email === email) //verifica se o email já existe
+                if (emailexiste) {
+                    throw new Error("Email já cadastrado") //se o email já existir, vai dar erro
+                }
+            }
+            user.nome = nome;
+            user.email = email;
+            user.senha = senhaCriptografada;
+            user.endereco = endereco;
+            user.telefone = telefone;
+            user.cpf = cpf;
+            this.saveUsers();
+            return user;
+        } catch (erro) {
+            console.log("Erro", erro)
+            throw erro
+        }
+    }
 }
+
+module.exports = new userService
