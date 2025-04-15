@@ -72,25 +72,21 @@ class userService {
         }
     }
 
-    async updateUser(id, nome, email, senha, endereco, telefone, cpf) {
+    async updateUser(id, nome, email, senha, endereco, telefone, cpf, idade) {
         try {            
             const senhaCriptografada = await bcrypt.hash(senha, 10);
-            const user = this.users.find(user => user.id == id);
-            if (!user) throw new Error("Usuário não encontrado");
-            if (email !== user.email) {
-                const emailexiste = this.users.some(user => user.email === email) //verifica se o email já existe
-                if (emailexiste) {
-                    throw new Error("Email já cadastrado") //se o email já existir, vai dar erro
-                }
-            }
-            user.nome = nome;
-            user.email = email;
-            user.senha = senhaCriptografada;
-            user.endereco = endereco;
-            user.telefone = telefone;
-            user.cpf = cpf;
-            this.saveUsers();
-            return user;
+            const resultados = await mysql.execute(`
+                UPDATE usuario
+                   SET nome      = ?, 
+                       email     = ?,
+                       idade     = ?, 
+                       endereço  = ?,
+                       cpf       = ?, 
+                       telefone  = ?,
+                       senha     = ?
+                 WHERE idusuario = ?;`, [nome, email, idade, endereco, cpf, telefone, senhaCriptografada, id]);
+           return resultados;
+            
         } catch (erro) {
             console.log("Erro", erro)
             throw erro
