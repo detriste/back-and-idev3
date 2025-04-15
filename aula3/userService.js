@@ -78,9 +78,7 @@ class userService {
 
     async updateUser(id, nome, email, senha, telefone, cpf,endereco) {
         try {
-            const user = this.users.find(user => user.id === id);
-            if (!user) throw new Error("Usuário não encontrado");
-0
+            
             user.nome = nome || user.nome;
             user.email = email || user.email;
             user.telefone = telefone || user.telefone;
