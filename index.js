@@ -1,41 +1,56 @@
-const express = require('express');
-const userService = require('./userService');
+const express = require('express')
+const userService = require('./userService') //importa o arquivo userService.js;
 
-const app = express(); // Inicializa o Express
-app.use(express.json()); // Middleware para interpretar JSON
+const app = express() //nome pro express, pode ser qualquer coisa
+app.use(express.json()) //ativa o json no express
 
-// Rota para criar um novo usuário
+
+//rota para usuario ser criado
 app.post("/users", async (req, res) => {
+    console.log('entrou')
     try {
-        const { nome, email, senha, telefone, cpf,endereco } = req.body;
-
-        // Validação dos campos obrigatórios
-        if (!nome || !email || !senha || !telefone || !cpf|| !endereco) {
-            return res.status(400).json({ error: "Todos os campos são obrigatórios: nome, email, senha, cpf, telefone" });
+        const { nome, email, senha, endereco, telefone, cpf, idade } = req.body //passa um arquivo via json pra nome e email
+        if (!nome || !email || !endereco || !senha || !telefone || !cpf|| !idade) { //caso o nome e o email sejam diferentes de (estejam vazios) vai dar erro
+            return res.status(400).json({ error: "Nome, email, endereço, senha, telefone e cpf são obrigatórios" }) //mensagem enviada caso dê erro (nome ou email vazios)
         }
-
-        // Adiciona o usuário
-        const user = await userService.addUser(nome, email, senha, telefone, cpf,endereco);
-        res.status(201).json({ user }); // Retorna o usuário criado com status 201
-    } catch (error) {
-        console.error("Erro ao criar usuário:", error);
-        res.status(500).json({ error: "Erro interno do servidor" });
+        const user = await userService.addUser(nome, email, senha, endereco, telefone, cpf, idade)
+        res.status(200).json({ "mensagem": "Usuario Cadastrado com Sucesso!" });
+    } catch (erro) {
+        res.status(400).json({ error: erro.message })
     }
-});
+})
 
-// Rota para listar todos os usuários
+//rota pra listar todos os usuarios
 app.get("/users", (req, res) => {
+    res.json(userService.getUsers())
+})
+
+app.delete("/users/:id", (req, res) => {
+    const id = parseInt(req.params.id) //converte id em numero
     try {
-        const users = userService.getUsers();
-        res.status(200).json(users); // Retorna a lista de usuários
-    } catch (error) {
-        console.error("Erro ao listar usuários:", error);
-        res.status(500).json({ error: "Erro interno do servidor" });
+        const resultado = userService.deleteUser(id) //tenta excluir o usuario
+        res.status(200).json(resultado) //retorna mensagem de sucesso
+    } catch (erro) {
+        res.status(404).json({ error: erro.message }) //retorna mensagem de erro
+    }
+})
+
+app.put("/users/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { nome, email, senha, endereco, telefone, cpf } = req.body;
+    try {
+        const resultado = await userService.updateUser(id, nome, email, senha, endereco, telefone, cpf);
+        if (!resultado) {
+            return res.status(404).json({ error: "Usuário não encontrado" });
+        }
+        res.status(200).json(resultado);
+    } catch (erro) {
+        console.log("Erro ao atualizar o usuário", erro);
+        res.status(500).json({ error: erro.message });
     }
 });
 
-// Configuração da porta do servidor
-const port = 3000;
+const port = 3000
 app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+    console.log("O servidor está rodando na porta: ", port)
+})
